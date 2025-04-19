@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "allowJs": true,
+    "module": "commonjs",
+    "strict": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types/"],
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "types": ["jest", "node"],
+
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "*": ["node_modules/*"],
+      "@/events/*": ["src/backend/events/*"],
+      "@/loaders/*": ["src/backend/loaders/*"],
+      "@/scrapper/*": ["src/backend/scrapper/*"],
+      "@/components/*": ["src/frontend/components/*"],
+      "@/global/*": ["src/frontend/global/*"],
+      "@/hooks/*": ["src/frontend/hooks/*"],
+      "@/icons/*": ["src/frontend/icons/*"],
+      "@/libs/*": ["src/frontend/libs/*"],
+      "@/page/*": ["src/frontend/page/*"],
+      "@/static/*": ["src/frontend/static/*"],
+      "@/types/*": ["src/frontend/types/*"],
+      "@/utils/*": ["src/frontend/utils/*"],
+      "@/backend/*": ["src/backend/*"],
+      "@/config/*": ["src/config/*"],
+      "@/frontend/*": ["src/frontend/*"]
+    }
+  },
+  "include": ["src/**/*", "./custom.d.ts"],
+  "exclude": [".webpack", "out"]
+}
