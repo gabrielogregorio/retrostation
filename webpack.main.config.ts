@@ -13,8 +13,8 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
-  mode: 'production',
-  devtool: false,
+  // mode: 'production',
+  // devtool: false,
   plugins,
   resolve,
 };

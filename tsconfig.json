@@ -9,7 +9,7 @@
     "typeRoots": ["./node_modules/@types/"],
     "noImplicitAny": false,
     "sourceMap": true,
-    "types": ["jest", "node"],
+    "types": ["node"],
 
     "jsx": "react-jsx",
     "baseUrl": ".",
@@ -35,6 +35,6 @@
       "@/frontend/*": ["src/frontend/*"]
     }
   },
-  "include": ["src/**/*", "./custom.d.ts"],
+  "include": ["src/**/*", "./global.d.ts"],
   "exclude": [".webpack", "out"]
 }

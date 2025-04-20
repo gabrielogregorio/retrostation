@@ -103,7 +103,7 @@ Essa forma foi criada para atender a casos onde é impossível de saber com prec
 
 Note que foi usado a string `$gameFolder`, ao usá-la, o retrostation irá injetar o caminho da pasta nessa string
 
-A plataforma pode ser `win32` para windows 32 ou 64 bits, e `linux` para linux.
+A `platform` pode ser `win32` para windows 32 ou 64 bits, e `linux` para linux.
 
 ### cache
 
@@ -179,9 +179,23 @@ Claro que sim, a versão atual foi feita para tentar lembrar um estilo mais anti
 
 Foi feito assim para ser flexivel e para que ele lidasse com formatos diferentes de jogos, até pensei em criar um sistema que baixasse automaticamente descrições e imagens, mas acredito que seria uma questão legalmente complexa, portanto a plataforma não inclui nada disso. Existem alternativas melhores do que essa plataforma para retro emulação, mas não para as necessidades que eu estava precisando.
 
+5. Porque os primeiros commits já tem a aplicação praticamente toda pronta?
+
+Poque esse projeto originalmente era privado, e continha commits que foram contaminados com imagens e descrições de um CD antigo de jogos flash (Como comentei, a origem desse projeto é lidar com jogos flash e outros mais antigos), provavelmente as imagens tinham direitos autorais, dessa forma, nessa versão final publica, tudo foi recomeçado para evitar problemas.
+
 ## Aviso legal
 
 Esse projeto foi feito para fins de facilitar a gestão de jogos antigos, como aqueles de cd flash, msdos e outros mais antigos e apenas demonstra ser configurado, sem incluir nenhum jogo, ROM, emulador ou material protegido por direitos autorais. As imagens usadas nos exemplos são apenas para fins de demonstração e em baixa qualidade, todo o uso fica por conta do usuário final.
 
 Os arquivos .exe e .swf na pasta static são apenas arquivos de texto, apenas com a extensão ajustada para servir como exemplo.
 
+## Licenças de conteudo de terceiros
+
+**Som de digitando**
+PSS560_Perc1_PROCESSED.aif by Crabflag -- https://freesound.org/s/559408/ -- License: Creative Commons 0
+
+**Som de click**
+jump2.wav by LloydEvans09 -- https://freesound.org/s/187024/ -- License: Attribution 4.0
+
+**Som de hover**
+Hover 2 by plasterbrain -- https://freesound.org/s/237421/ -- License: Creative Commons 0

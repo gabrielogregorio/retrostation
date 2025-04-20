@@ -15,6 +15,7 @@ import { readPlatformsData } from '@/loaders/platforms';
 import { readRunnersByFoldersData } from '@/loaders/runnerByFolder';
 import { startStaticFilesServer } from '@/backend/server';
 import { DEFAULT_API_PORT } from '@/config/index';
+import { getLocalRunNode } from '@/backend/utils';
 
 console.log('STARTING RETROSTATION');
 
@@ -49,7 +50,7 @@ const createWindow = (): void => {
     fullscreen: true,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
       webSecurity: false,
     },
@@ -71,7 +72,9 @@ const createWindow = (): void => {
 ipcMain.on(EVENT_NAMES.runCliCommands, (event, payload) => {
   console.log(`CLI: ${payload.command}`);
 
-  const absoluteCommand = pathNode.resolve(process.cwd(), payload.command);
+  event.reply(EVENT_NAMES.runnerWasStarted, { path: payload.path });
+
+  const absoluteCommand = pathNode.resolve(getLocalRunNode(), payload.command);
   console.log(`CLI: PATH RESOLVED: ${absoluteCommand}`);
 
   const processCliCommand = exec(absoluteCommand, (error: Error | null, stdout: string, stderr: string) => {
@@ -95,7 +98,7 @@ ipcMain.on(EVENT_NAMES.runCliCommands, (event, payload) => {
 ipcMain.on(EVENT_NAMES.runScrapper, (event) => {
   console.log('SCRAPPER: START');
 
-  const pathWorkerScrapper = pathNode.resolve(process.cwd(), './static/workers/backend/scrapper.js');
+  const pathWorkerScrapper = pathNode.resolve(getLocalRunNode(), './static/workers/backend/scrapper.js');
 
   console.log('SCRAPPER: PATH WORKER', pathWorkerScrapper);
 
@@ -108,7 +111,7 @@ ipcMain.on(EVENT_NAMES.runScrapper, (event) => {
       event.reply(EVENT_NAMES.outputRunScrapper, { success: true });
     } else if (msg.type === 'error') {
       console.log('SCRAPPER: ERROR RUN');
-      event.reply(EVENT_NAMES.outputRunScrapper, { success: false, error: msg.games });
+      event.reply(EVENT_NAMES.outputRunScrapper, { success: false, error: 'Error on run scrapper' });
     }
   });
 

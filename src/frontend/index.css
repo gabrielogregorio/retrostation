@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Play', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  color: white;
+}
+
+.vertical-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.vertical-scrollbar::-webkit-scrollbar-track {
+  border: none;
+  background: #333333;
+}
+
+.vertical-scrollbar::-webkit-scrollbar-thumb {
+  border: none;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+.vertical-scrollbar::-webkit-scrollbar-thumb:hover {
+  border: none;
+  background: #ffffff80;
+}
