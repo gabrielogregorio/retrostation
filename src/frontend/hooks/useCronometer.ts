@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { useState, useRef, useCallback } from 'react';
 
 const ONE_SECONDS_IN_MS = 1000;
@@ -6,7 +5,7 @@ const ONE_SECONDS_IN_MS = 1000;
 export const useStopwatch = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const start = useCallback(() => {
     if (!isRunning) {

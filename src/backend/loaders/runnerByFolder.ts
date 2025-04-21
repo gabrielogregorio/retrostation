@@ -1,9 +1,31 @@
+import { generateUniqueId } from '@/backend/utils/generateUniqueId';
 import { FILE_PATH_RUNNER_BY_FOLDER, PATH_CONTENT_RUNNERS_FOLDER } from '@/config/index';
 import { readFileUtil } from '@/loaders/readFile';
 import { RunnersByFolderType } from '@/types/all';
 
-export const readRunnersByFoldersData = () =>
-  readFileUtil<RunnersByFolderType[]>(FILE_PATH_RUNNER_BY_FOLDER, [
+type RunnersByFolderMapFileType = {
+  mode: 'file';
+  extensionFile: string;
+  ignoreFiles: string[];
+};
+
+type RunnersByFolderMapFolderType = {
+  mode: 'folder';
+};
+
+type loaderFileRunnersByFolderType = {
+  folder: string;
+  map: RunnersByFolderMapFileType | RunnersByFolderMapFolderType;
+  runners: {
+    platform: string;
+    name: string;
+    message: string;
+    command: string;
+  }[];
+};
+
+export const readRunnersByFoldersData = (): RunnersByFolderType[] =>
+  readFileUtil<loaderFileRunnersByFolderType[]>(FILE_PATH_RUNNER_BY_FOLDER, [
     {
       folder: 'SWF_FLASH',
       map: {
@@ -34,4 +56,11 @@ export const readRunnersByFoldersData = () =>
         },
       ],
     },
-  ]);
+  ]).map((runnerByFolderWithoutId, index) => ({
+    id: generateUniqueId(index),
+    ...runnerByFolderWithoutId,
+    runners: runnerByFolderWithoutId.runners.map((runner) => ({
+      id: generateUniqueId(index),
+      ...runner,
+    })),
+  }));

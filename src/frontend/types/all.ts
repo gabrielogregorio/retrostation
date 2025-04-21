@@ -13,24 +13,16 @@ export type DescriptionsType = {
 type GameFileType =
   | {
       type: 'file';
+      id: string;
       gameRelativePath: string;
       gameRelativePathOrFolder: string;
     }
   | {
       type: 'folder';
       gameRelativeFolder: string;
+      id: string;
       gameRelativePathOrFolder: string;
     };
-
-export type GamesType = {
-  name: string;
-  folder: string;
-  description: string;
-  image: string;
-  files: GameFileType[];
-  searchNameOptimized: string;
-  fullTextSarchNameOptimized: string;
-};
 
 export type PlatformsType = {
   name: string;
@@ -50,13 +42,26 @@ type RunnersByFolderMapFolderType = {
 
 export type RunnersByFolderType = {
   folder: string;
+  id: string;
   map: RunnersByFolderMapFileType | RunnersByFolderMapFolderType;
   runners: {
     platform: string;
     name: string;
+    id: string;
     message: string;
     command: string;
   }[];
+};
+
+export type GamesType = {
+  name: string;
+  id: string;
+  folder: string;
+  description: string;
+  image: string;
+  files: GameFileType[];
+  searchNameOptimized: string;
+  fullTextSarchNameOptimized: string;
 };
 
 export type GlobalDataType = {

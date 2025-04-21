@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape */
-
 export const getShowName = (name: string) =>
   name
     .toLowerCase()
@@ -9,7 +7,7 @@ export const getShowName = (name: string) =>
     .normalize('NFD') // [ção] -> cao
     .replace(/\s{1,}/g, ' ') // '    ' -> ' '
     .replace(/[\u0300-\u036f]/g, '') // ção -> cao
-    .replace(/[\[(][^\])]*$/g, '') // -> gameName(br _ gameName[br -> gameName
+    .replace(/[[(][^\])]*$/g, '') // -> gameName(br _ gameName[br -> gameName
     .replace('-image', '') // gameName-image.swf
     .replace(/_?v\d{1,}\.\d{1,}_?/, '') // _v100.999_ _ v10.42_ _ _v2.3 ->
     .trim();

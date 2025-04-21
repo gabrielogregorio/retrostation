@@ -2,16 +2,16 @@
 import { PATH_CONTENT_GAMES_FOLDER } from '@/config/index';
 import { readDescriptionsData } from '@/loaders/descriptions';
 import { saveGamesData } from '@/loaders/games';
+import { GamesLoaderType } from '@/loaders/games.types';
 import { readRunnersByFoldersData } from '@/loaders/runnerByFolder';
 import { mergeGamesByName } from '@/scrapper/mergeGamesByName';
 import {
-  findImageFromGame,
+  findImageFromGameByNameOptimized,
   getAllImagesResolved,
-  getOnlyName,
+  getNameFromFilename,
   loadAllGamesWithPathResolvedAndFolder,
 } from '@/scrapper/utils';
 import { onlyLettersAndNumbers } from '@/scrapper/utilsv2';
-import { GamesType } from '@/types/all';
 
 export const runScrapper = async () => {
   const images = getAllImagesResolved();
@@ -27,7 +27,7 @@ export const runScrapper = async () => {
 
   const dataMerged = mergeGamesByName(
     allFiles.map((file) => {
-      const nameRaw = getOnlyName(file.type === 'file' ? file.urlRelativeFile : file.urlRelativeFolder);
+      const nameRaw = getNameFromFilename(file.type === 'file' ? file.urlRelativeFile : file.urlRelativeFolder);
       return {
         ...file,
         nameRaw,
@@ -35,7 +35,7 @@ export const runScrapper = async () => {
     }),
   );
 
-  const games: GamesType[] = [];
+  const games: GamesLoaderType[] = [];
 
   Object.keys(dataMerged).forEach((folder) => {
     const gamesByName = dataMerged[folder];
@@ -47,18 +47,18 @@ export const runScrapper = async () => {
       const findDescriptions = descriptions.find((item) => item.search === searchNameOptimized);
 
       const findImageRealName = findDescriptions?.realName
-        ? findImageFromGame(images, onlyLettersAndNumbers(findDescriptions?.realName))
+        ? findImageFromGameByNameOptimized(images, onlyLettersAndNumbers(findDescriptions?.realName))
         : undefined;
 
       const findImageSearch = searchNameOptimized
-        ? findImageFromGame(images, onlyLettersAndNumbers(searchNameOptimized))
+        ? findImageFromGameByNameOptimized(images, onlyLettersAndNumbers(searchNameOptimized))
         : undefined;
 
       const findImage = findImageSearch || findImageRealName;
 
       const description = findDescriptions?.description || '';
 
-      const files: GamesType['files'] = gameItem.map((gameI) => {
+      const files: GamesLoaderType['files'] = gameItem.map((gameI) => {
         if (gameI.type === 'file') {
           return {
             type: 'file',

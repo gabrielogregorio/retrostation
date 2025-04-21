@@ -1,7 +1,6 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-restricted-globals */
 import { ClassicsType, GamesType, PlatformsType } from '@/types/all';
 import { UserType } from '@/types/user';
+import { sortArrayUtil } from '@/utils/sort';
 
 // cd: 102 package chance dropper beause this code expand from 112 line to 12k lines and cause slow
 
@@ -28,19 +27,39 @@ const classicsToTop = (games: GamesType[], classicsNames: ClassicsType) => {
       return right.folder === key && listClassics.find((item) => relativePathRight.includes(item));
     });
 
-    if (aIsClassic && !bIsClassic) return -1;
+    if (aIsClassic && !bIsClassic) return sortArrayUtil.bToEnd;
 
-    if (!aIsClassic && bIsClassic) return 1;
+    if (!aIsClassic && bIsClassic) return sortArrayUtil.aToEnd;
 
-    return 0;
+    return sortArrayUtil.notSort;
   });
 };
 
 const noImagesToEnd = (gamesFilteredLocal: GamesType[]) =>
-  gamesFilteredLocal.sort((a, b) => (!a.image ? 1 : !b.image ? -1 : 0));
+  gamesFilteredLocal.sort((a, b) => {
+    if (!a.image && b.image) {
+      return sortArrayUtil.aToEnd;
+    }
+
+    if (a.image && !b.image) {
+      return sortArrayUtil.bToEnd;
+    }
+
+    return sortArrayUtil.notSort;
+  });
 
 function flashEnd(gamesFilteredLocal: GamesType[]) {
-  return gamesFilteredLocal.sort((a, b) => (a.folder === 'SWF_FLASH' ? 1 : b.folder === 'SWF_FLASH' ? -1 : 0));
+  return gamesFilteredLocal.sort((a, b) => {
+    if (a.folder === 'SWF_FLASH' && b.folder !== 'SWF_FLASH') {
+      return sortArrayUtil.aToEnd;
+    }
+
+    if (a.folder !== 'SWF_FLASH' && b.folder === 'SWF_FLASH') {
+      return sortArrayUtil.bToEnd;
+    }
+
+    return sortArrayUtil.notSort;
+  });
 }
 
 function filterByTextName(gamesFilteredLocal: GamesType[], searchTerm: string) {
@@ -63,6 +82,7 @@ export type PayloadFilters = {
 };
 
 try {
+  // eslint-disable-next-line no-restricted-globals
   self.onmessage = (event) => {
     const {
       gamesByPlatform,
@@ -100,6 +120,7 @@ try {
         };
       });
 
+      // eslint-disable-next-line no-restricted-globals
       self.postMessage(
         flashEnd(noImagesToEnd(gamesFilteredLocalWithTime.sort((a, b) => b.elapsedSeconds - a.elapsedSeconds))),
       );
@@ -118,6 +139,7 @@ try {
 
     gamesFilteredLocal = flashEnd(noImagesToEnd(gamesFilteredLocal));
 
+    // eslint-disable-next-line no-restricted-globals
     self.postMessage(gamesFilteredLocal);
   };
 } catch (err) {

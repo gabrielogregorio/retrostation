@@ -51,7 +51,9 @@ export const SideMenu = () => {
                 className="w-[24px] object-container select-none"
               />
             ) : (
-              <div className="text-textNormal text-sm select-none">Sem imagens</div>
+              <div className="text-textNormal flex items-center justify-center w-[24px] text-sm select-none">
+                Sem imagens
+              </div>
             )}
             <div
               className={`text-base whitespace-nowrap w-full overflow-hidden text-ellipsis text-left ${filters.platform?.folder === platform.folder ? 'text-textHighlited font-bold' : 'text-textNormal'}`}>

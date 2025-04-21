@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import fs from 'fs';
 import path from 'path';
 import { PATH_GAME_ASSETS_FOLDER, PATH_CONTENT_GAMES_FOLDER } from '@/config/index';
@@ -9,6 +8,7 @@ const getAllFiles = (dir: string) => {
   let results: string[] = [];
   fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
     const fullPath = path.join(dir, entry.name);
+
     if (entry.isDirectory()) {
       results = results.concat(getAllFiles(fullPath));
     } else {
@@ -18,7 +18,7 @@ const getAllFiles = (dir: string) => {
   return results;
 };
 
-export const getOnlyName = (fullPath: string) => {
+export const getNameFromFilename = (fullPath: string) => {
   const parts = fullPath.split(/\\|\//g);
   const lastPart = parts[parts.length - 1];
   return lastPart.substring(0, lastPart.lastIndexOf('.')) || lastPart;
@@ -29,35 +29,34 @@ export const getAllImagesResolved = (): {
   search: string;
 }[] =>
   getAllFiles(path.resolve(PATH_GAME_ASSETS_FOLDER))
-    .map((urlRelative) => {
-      if (
+    .filter((urlRelative) => {
+      const shouldBeIgnore =
         urlRelative.endsWith('.git') ||
         urlRelative.endsWith('.sh') ||
         urlRelative.endsWith('.md') ||
-        urlRelative.endsWith('.gitignore')
-      ) {
-        return { urlRelative: '', search: '' };
-      }
+        urlRelative.endsWith('.gitignore');
 
-      const pathX = getOnlyName(urlRelative);
-
-      return { urlRelative: urlRelative.replace(/\\/g, '/'), search: onlyLettersAndNumbers(pathX) };
+      return !shouldBeIgnore;
     })
-    .filter((item) => item.urlRelative);
+    .map((urlRelative) => {
+      const name = getNameFromFilename(urlRelative);
 
-type ReturnLoadFilesFile = { urlRelativeFile: string; folder: string; type: 'file' };
-type ReturnLoadFilesFolder = { urlRelativeFolder: string; folder: string; type: 'folder' };
+      return { urlRelative: urlRelative.replace(/\\/g, '/'), search: onlyLettersAndNumbers(name) };
+    });
 
-type ReturnLoadFiles = ReturnLoadFilesFile | ReturnLoadFilesFolder;
+type ReturnGameFile = { urlRelativeFile: string; folder: string; type: 'file' };
+type ReturnGameFolder = { urlRelativeFolder: string; folder: string; type: 'folder' };
+
+type ReturnGame = ReturnGameFile | ReturnGameFolder;
 
 export const loadAllGamesWithPathResolvedAndFolder = ({
   runnersByFolder,
 }: {
   runnersByFolder: RunnersByFolderType[];
 }) => {
-  const allGamesResolved: ReturnLoadFiles[] = [];
+  const allGamesResolved: ReturnGame[] = [];
 
-  for (const runnerByFolder of runnersByFolder) {
+  runnersByFolder.forEach((runnerByFolder) => {
     const folderResolved = path.resolve(PATH_CONTENT_GAMES_FOLDER, runnerByFolder.folder);
 
     if (!fs.existsSync(folderResolved)) {
@@ -68,28 +67,22 @@ export const loadAllGamesWithPathResolvedAndFolder = ({
 
     if (map.mode === 'file') {
       const allFiles = getAllFiles(folderResolved).filter((gameFileUrlRelative) => {
-        const shouldBeIgnre = map.ignoreFiles?.length
+        const shouldBeIgnore = map.ignoreFiles?.length
           ? map.ignoreFiles.find((ignPattern) => gameFileUrlRelative.toLowerCase().includes(ignPattern))
           : false;
 
-        if (shouldBeIgnre) {
+        if (shouldBeIgnore) {
           return false;
         }
 
         return gameFileUrlRelative.toLowerCase().endsWith(map.extensionFile);
       });
 
-      const onlyInexistentMap: string[] = [];
-
-      allFiles.forEach((itemFile) => {
-        onlyInexistentMap.push(itemFile);
-      });
-
-      const games = onlyInexistentMap.map((urlRelative) => ({
+      const games = allFiles.map((urlRelative) => ({
         urlRelativeFile: urlRelative.replace(/\\/g, '/'),
         folder: runnerByFolder.folder,
         type: 'file',
-      })) as ReturnLoadFilesFile[];
+      })) as ReturnGameFile[];
 
       allGamesResolved.push(...games);
     } else if (map.mode === 'folder') {
@@ -102,16 +95,16 @@ export const loadAllGamesWithPathResolvedAndFolder = ({
         urlRelativeFolder: relativeFolder.replace(/\\/g, '/'),
         folder: runnerByFolder.folder,
         type: 'folder',
-      })) as ReturnLoadFilesFolder[];
+      })) as ReturnGameFolder[];
 
       allGamesResolved.push(...games);
     }
-  }
+  });
 
   return allGamesResolved;
 };
 
-export const findImageFromGame = (
+export const findImageFromGameByNameOptimized = (
   allImagesResolvedLocal: {
     urlRelative: string;
     search: string;

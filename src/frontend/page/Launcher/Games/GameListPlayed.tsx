@@ -46,7 +46,9 @@ export const GameListPlayed = ({ games, setGameSelected }: LauncerItemProps) => 
                   className="object-cover h-[90px] rounded-lg"
                 />
               ) : (
-                <div className="text-textNormal text-sm select-none">Sem imagens</div>
+                <div className="text-textNormal flex items-center justify-center h-[90px] text-sm select-none">
+                  Sem imagens
+                </div>
               )}
             </div>
 

@@ -26,8 +26,8 @@ export const GamePlayer = ({
       </div>
 
       <Modal.Content>
-        <div className="w-full">
-          {game?.image ? (
+        {game?.image ? (
+          <div className="w-full">
             <img
               key={game?.image}
               src={resolveRelativePaths(`${PATH_API_GAME_ASSETS_FOLDER}${game.image}`)}
@@ -37,10 +37,8 @@ export const GamePlayer = ({
               alt=""
               className="w-full h-[250px] object-cover rounded-md select-none"
             />
-          ) : (
-            <div className="text-textNormal text-sm select-none">Sem imagens</div>
-          )}
-        </div>
+          </div>
+        ) : undefined}
 
         <Modal.DialogTitle className="text-xl font-bold flex items-center mt-2">{game?.name}</Modal.DialogTitle>
 
@@ -55,10 +53,9 @@ export const GamePlayer = ({
         </div>
 
         <div className="mt-4 flex flex-col gap-4">
-          {game?.files.map((file, index) => (
+          {game?.files.map((file) => (
             <GameRun
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${file.gameRelativePathOrFolder}-${index}`}
+              key={file.id}
               file={file}
               runnersByFolderAvailableInThisPlatform={runnersByFolderAvailableInThisPlatform}
             />

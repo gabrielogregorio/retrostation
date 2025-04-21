@@ -92,12 +92,10 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
       ) : undefined}
 
       <div className="mt-2 flex flex-col gap-3">
-        {runnersByFolderToThisGame.map((runnersByThisGame, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={`${runnersByThisGame.folder}-${index}-exists-multiples-runners-by-folder`}>
+        {runnersByFolderToThisGame.map((runnersByThisGame) => (
+          <div key={runnersByThisGame.id}>
             {runnersByThisGame.runners.map((runner) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={`${runnersByThisGame.folder}-${index}-${runner.command}`}>
+              <div key={runner.id}>
                 {runner.message ? (
                   <div className="flex justify-start items-center gap-2">
                     <div>

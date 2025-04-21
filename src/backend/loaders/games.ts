@@ -1,10 +1,12 @@
+import { generateUniqueId } from '@/backend/utils/generateUniqueId';
 import { FILE_PATH_GAMES } from '@/config/index';
+import { GamesLoaderType } from '@/loaders/games.types';
 import { readFileUtil } from '@/loaders/readFile';
 import { saveFile } from '@/loaders/saveFile';
 import { GamesType } from '@/types/all';
 
-export const readGamesData = () =>
-  readFileUtil<GamesType[]>(FILE_PATH_GAMES, [
+export const readGamesData = (): GamesType[] =>
+  readFileUtil<GamesLoaderType[]>(FILE_PATH_GAMES, [
     {
       name: 'Esse jogo se chama Nem ca vaca tussa',
       folder: 'SWF_FLASH',
@@ -38,8 +40,16 @@ export const readGamesData = () =>
       fullTextSarchNameOptimized:
         '\n          \n          examplemsdosgame\n\n          examplemsdosgame\n          \n            undefined exe_msdos []    []\n            ../content/games/exe_msdos/examplemsdosgame\n              ',
     },
-  ]);
+  ]).map((game, index) => ({
+    // cd: Id before games, if games have id, the games id will be preserved in case the user is versioning, this will prevent any scrapper from generating a new id
+    id: generateUniqueId(index),
+    ...game,
+    files: game.files.map((file, indexFiles) => ({
+      id: generateUniqueId(indexFiles),
+      ...file,
+    })),
+  }));
 
-export const saveGamesData = (data: GamesType[]) => {
+export const saveGamesData = (data: GamesLoaderType[]) => {
   saveFile(FILE_PATH_GAMES, data);
 };
