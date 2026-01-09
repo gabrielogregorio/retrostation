@@ -42,7 +42,6 @@ Aqui estão os binários do retrostation, não mexa nessa pasta
 
 ### config
 
-- classics.json - Você pode epecificar quais pastas são clássicos
 - descriptions.json - Você pode deixar descrições dos jogos, basta preencher os campos e deixar um fileName similar ao nome do arquivo.
 - plataforms.json - As plataformas que você tem disponível, com imagens na pasta `assets/plataforms`. OTIMIZE suas imagens, elas podem pesar muito na listagem, a sugestão é você converter as imagens para webp preservando apenas 20% da qualidade, normalmente é uma boa forma de fazer isso.
 - runnersByFolder.json - Os runners ou emuladores que irão executar dentro de cada pasta.

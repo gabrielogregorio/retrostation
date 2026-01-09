@@ -1,7 +1,3 @@
-export type ClassicsType = {
-  [key: string]: string[];
-};
-
 export type DescriptionsType = {
   folder?: string;
   fileName?: string;
@@ -65,7 +61,6 @@ export type GamesType = {
 };
 
 export type GlobalDataType = {
-  classics: ClassicsType;
   descriptions: DescriptionsType[];
   games: GamesType[];
   platforms: PlatformsType[];

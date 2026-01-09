@@ -1,42 +1,19 @@
-import { ClassicsType, GamesType, PlatformsType } from '@/types/all';
+import { GamesType, PlatformsType } from '@/types/all';
 import { UserType } from '@/types/user';
 import { sortArrayUtil } from '@/utils/sort';
 
-// cd: 102 package chance dropper beause this code expand from 112 line to 12k lines and cause slow
+function pipe<T>(value: T, ...fns: Array<(arg: T) => T>): T {
+  return fns.reduce((acc, fn) => fn(acc), value);
+}
 
-const shufflePseudoSeed = (array: GamesType[], seed: number) =>
-  array
-    .map((value, index) => ({ value, sort: seed + index }))
+function shufflePseudoSeed(array: GamesType[], seed: number): GamesType[] {
+  return [...array.map((value, index) => ({ value, sort: seed + index }))]
     .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);
+    .map((value) => value.value);
+}
 
-const classicsToTop = (games: GamesType[], classicsNames: ClassicsType) => {
-  const keysClassicsNames = Object.keys(classicsNames);
-
-  return games.sort((left, right) => {
-    const relativePathLeft = left.files.map((item) => item.gameRelativePathOrFolder).join('');
-    const relativePathRight = right.files.map((item) => item.gameRelativePathOrFolder).join('');
-
-    const aIsClassic = keysClassicsNames.some((key) => {
-      const listClassics = classicsNames[key];
-      return left.folder === key && listClassics.find((item) => relativePathLeft.includes(item));
-    });
-
-    const bIsClassic = keysClassicsNames.some((key) => {
-      const listClassics = classicsNames[key];
-      return right.folder === key && listClassics.find((item) => relativePathRight.includes(item));
-    });
-
-    if (aIsClassic && !bIsClassic) return sortArrayUtil.bToEnd;
-
-    if (!aIsClassic && bIsClassic) return sortArrayUtil.aToEnd;
-
-    return sortArrayUtil.notSort;
-  });
-};
-
-const noImagesToEnd = (gamesFilteredLocal: GamesType[]) =>
-  gamesFilteredLocal.sort((a, b) => {
+function sortNoImagesToEnd(gamesFilteredLocal: GamesType[]): GamesType[] {
+  return [...gamesFilteredLocal].sort((a, b) => {
     if (!a.image && b.image) {
       return sortArrayUtil.aToEnd;
     }
@@ -47,9 +24,10 @@ const noImagesToEnd = (gamesFilteredLocal: GamesType[]) =>
 
     return sortArrayUtil.notSort;
   });
+}
 
-function flashEnd(gamesFilteredLocal: GamesType[]) {
-  return gamesFilteredLocal.sort((a, b) => {
+function sortflashGamesEnd(gamesFilteredLocal: GamesType[]): GamesType[] {
+  return [...gamesFilteredLocal].sort((a, b) => {
     if (a.folder === 'SWF_FLASH' && b.folder !== 'SWF_FLASH') {
       return sortArrayUtil.aToEnd;
     }
@@ -62,15 +40,17 @@ function flashEnd(gamesFilteredLocal: GamesType[]) {
   });
 }
 
-function filterByTextName(gamesFilteredLocal: GamesType[], searchTerm: string) {
-  return gamesFilteredLocal.filter((game) => game.fullTextSarchNameOptimized.includes(searchTerm));
+function filterByTextName(gamesFilteredLocal: GamesType[], searchTerm: string): GamesType[] {
+  if (searchTerm && searchTerm?.trim()) {
+    return gamesFilteredLocal.filter((game) => game.fullTextSarchNameOptimized.includes(searchTerm.trim()));
+  }
+  return gamesFilteredLocal;
 }
 
 export type filtersType = {
   screen: 'home' | 'favorites' | 'time-game';
   platform: PlatformsType;
   seedDay: number;
-  classicsToTop: boolean;
   searchTerm: string;
 };
 
@@ -78,8 +58,53 @@ export type PayloadFilters = {
   gamesByPlatform: GamesType[];
   filters: filtersType;
   userData: UserType;
-  classicsNames: ClassicsType;
 };
+
+function filterByPlataform(gamesFilteredLocal: GamesType[], plataform: PlatformsType): GamesType[] {
+  if (plataform !== null) {
+    return gamesFilteredLocal.filter((game) => plataform.folder.includes(game.folder));
+  }
+
+  return gamesFilteredLocal;
+}
+
+function filterByScreen(
+  gamesFilteredLocal: GamesType[],
+  screen: filtersType['screen'],
+  userData: UserType,
+): GamesType[] {
+  if (screen === 'time-game') {
+    const allGamesInPlayHistoryMap = new Map(
+      userData.playHistory.map((playItem) => [playItem.path, playItem.elapsedSeconds]),
+    );
+
+    const part1 = [...gamesFilteredLocal].filter((item) =>
+      item.files.find((file) => allGamesInPlayHistoryMap.get(file.gameRelativePathOrFolder)),
+    );
+
+    return part1
+      .map((game) => {
+        const playFound = userData.playHistory.find((playItem) =>
+          game.files.find((file) => playItem.path === file.gameRelativePathOrFolder),
+        );
+        return {
+          ...game,
+          elapsedSeconds: playFound.elapsedSeconds || 0,
+        };
+      })
+
+      .sort((a, b) => b.elapsedSeconds - a.elapsedSeconds);
+  }
+
+  if (screen === 'favorites') {
+    const allFavorites = new Set(userData.favoriteGamePaths);
+    return gamesFilteredLocal.filter((game) =>
+      game.files.find((file) => allFavorites.has(file.gameRelativePathOrFolder)),
+    );
+  }
+
+  return gamesFilteredLocal;
+}
 
 try {
   // eslint-disable-next-line no-restricted-globals
@@ -88,62 +113,25 @@ try {
       gamesByPlatform,
       filters: { searchTerm, seedDay, ...filters },
       userData,
-      classicsNames,
     } = event.data as PayloadFilters;
 
-    let gamesFilteredLocal = [...gamesByPlatform];
-
-    gamesFilteredLocal = shufflePseudoSeed(gamesFilteredLocal, seedDay);
-
-    gamesFilteredLocal = filterByTextName(gamesFilteredLocal, searchTerm);
-
-    if (filters.platform !== null) {
-      gamesFilteredLocal = gamesFilteredLocal.filter((game) =>
-        filters.platform.folder.find((folder) => game.folder === folder),
-      );
-    }
-
-    if (filters.screen === 'time-game') {
-      gamesFilteredLocal = gamesFilteredLocal.filter((item) =>
-        userData.playHistory.find((playItem) =>
-          item.files.find((file) => playItem.path === file.gameRelativePathOrFolder),
-        ),
-      );
-
-      const gamesFilteredLocalWithTime = gamesFilteredLocal.map((game) => {
-        const playFound = userData.playHistory.find((playItem) =>
-          game.files.find((file) => playItem.path === file.gameRelativePathOrFolder),
-        );
-        return {
-          ...game,
-          elapsedSeconds: playFound.elapsedSeconds || 0,
-        };
-      });
-
-      // eslint-disable-next-line no-restricted-globals
-      self.postMessage(
-        flashEnd(noImagesToEnd(gamesFilteredLocalWithTime.sort((a, b) => b.elapsedSeconds - a.elapsedSeconds))),
-      );
-      return;
-    }
-
-    if (filters.screen === 'favorites') {
-      gamesFilteredLocal = gamesFilteredLocal.filter((game) =>
-        game.files.find((file) => userData.favoriteGamePaths.includes(file.gameRelativePathOrFolder)),
-      );
-    }
-
-    if (filters.classicsToTop) {
-      gamesFilteredLocal = classicsToTop(gamesFilteredLocal, classicsNames);
-    }
-
-    gamesFilteredLocal = flashEnd(noImagesToEnd(gamesFilteredLocal));
+    const gamesFilteredLocal = [...gamesByPlatform];
 
     // eslint-disable-next-line no-restricted-globals
-    self.postMessage(gamesFilteredLocal);
+    self.postMessage(
+      pipe(
+        gamesFilteredLocal,
+        (value) => shufflePseudoSeed(value, seedDay),
+        (value) => filterByTextName(value, searchTerm),
+        (value) => filterByPlataform(value, filters.platform),
+        (value) => filterByScreen(value, filters.screen, userData),
+        sortflashGamesEnd,
+        sortNoImagesToEnd,
+      ),
+    );
   };
 } catch (err) {
   console.error(err);
 }
 
-export { shufflePseudoSeed, filterByTextName, classicsToTop, noImagesToEnd };
+export { shufflePseudoSeed, filterByTextName, sortNoImagesToEnd as noImagesToEnd };

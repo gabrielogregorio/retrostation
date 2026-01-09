@@ -17,7 +17,7 @@ const ApiBridge = {
     };
   },
 
-  runScrapper: async () => ipcRenderer.send(EVENT_NAMES.runScrapper),
+  runScrapper: () => ipcRenderer.send(EVENT_NAMES.runScrapper),
   whenRunScrapperRespond: (callback: (output: { success: boolean; error: unknown }) => void) => {
     const listener = (_event, output) => callback(output);
     ipcRenderer.on(EVENT_NAMES.outputRunScrapper, listener);
@@ -51,6 +51,7 @@ const ApiBridge = {
   getGlobalData: () => ipcRenderer.invoke(EVENT_NAMES.getGlobalData),
 
   updateUserData: (updatedData: UserType) => ipcRenderer.send(EVENT_NAMES.updateUserData, updatedData),
+  
   whenUserDataUpdate: (callback: (data: UserType) => void) => {
     const listener = (_event, data) => callback(data);
 

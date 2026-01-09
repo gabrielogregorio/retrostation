@@ -1,5 +1,5 @@
 import { filtersType } from '../../workers/frontend/filter';
-import { ClassicsType, GamesType } from '@/types/all';
+import { GamesType } from '@/types/all';
 import { UserType } from '@/types/user';
 
 export function callFilterWorker(
@@ -7,7 +7,6 @@ export function callFilterWorker(
   filters: filtersType,
   userData: UserType,
   callback: (data: GamesType[]) => void,
-  classics: ClassicsType,
 ) {
   if (typeof Worker !== 'undefined') {
     // @ts-ignore
@@ -19,7 +18,6 @@ export function callFilterWorker(
       gamesByPlatform,
       filters,
       userData,
-      classicsNames: classics,
     });
 
     worker.onmessage = (event) => {

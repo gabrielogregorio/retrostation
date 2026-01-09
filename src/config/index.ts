@@ -16,7 +16,6 @@ export const PATH_CONTENT_RUNNERS_FOLDER = `${LOCAL_FILES}content/runners`;
 
 // ============ CONFIG_FILES ============
 export const FILE_PATH_PLATFORMS = `${LOCAL_FILES}config/platforms.json`;
-export const FILE_PATH_CLASSICS = `${LOCAL_FILES}config/classics.json`;
 export const FILE_PATH_DESCRIPTIONS = `${LOCAL_FILES}config/descriptions.json`;
 export const FILE_PATH_RUNNER_BY_FOLDER = `${LOCAL_FILES}config/runnersByFolder.json`;
 

@@ -4,7 +4,6 @@ import { PlatformsType } from '@/types/all';
 type FilterType = {
   screen: 'home' | 'favorites' | 'time-game';
   platform: PlatformsType | null;
-  classicsToTop: boolean;
 };
 
 type ContextType = {
@@ -16,7 +15,6 @@ const initialStateFilters: ContextType = {
   setFilters: () => {},
   filters: {
     platform: null,
-    classicsToTop: true,
     screen: 'home',
   },
 };
@@ -31,7 +29,6 @@ export const ContextFiltersProvider = ({ children }: ContextFiltersProviderType)
   const [filters, setFilters] = useState<FilterType>({
     screen: 'home',
     platform: null,
-    classicsToTop: true,
   });
 
   const value = useMemo(() => ({ setFilters, filters }), [setFilters, filters]);

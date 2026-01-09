@@ -7,7 +7,6 @@ const ContextGlobalData = createContext<{
 }>({
   setUpdateGlobalData: () => {},
   globalData: {
-    classics: {},
     descriptions: [],
     games: [],
     platforms: [],
@@ -21,7 +20,6 @@ type contextGlobalData = {
 
 export const ContextGlobalDataProvider = ({ children }: contextGlobalData) => {
   const [globalData, setUpdateGlobalData] = useState<GlobalDataType>({
-    classics: {},
     descriptions: [],
     games: [],
     platforms: [],

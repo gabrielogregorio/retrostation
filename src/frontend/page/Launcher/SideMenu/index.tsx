@@ -54,8 +54,7 @@ export const SideMenu = ({ gamesByPlatform }: { gamesByPlatform: GamesType[] }) 
           setGamesFiltered(gameFiltered);
           setIsLoading(false);
           workerRef.current = null;
-        },
-        globalData.classics,
+        }
       );
     };
 

@@ -8,7 +8,6 @@ import { dispatchGameDataUpdated } from '@/events/dispatchGameDataUpdated';
 import { GamesType, GlobalDataType } from '@/types/all';
 import { getOsVersion } from '@/backend/getVBersion';
 import { readUserData, saveUserData } from '@/loaders/user';
-import { readClassicsData } from '@/loaders/classics';
 import { readDescriptionsData } from '@/loaders/descriptions';
 import { readGamesData } from '@/loaders/games';
 import { readPlatformsData } from '@/loaders/platforms';
@@ -138,7 +137,6 @@ ipcMain.handle(EVENT_NAMES.getUserData, () => readUserData());
 
 ipcMain.handle(EVENT_NAMES.getGlobalData, () => {
   const data: GlobalDataType = {
-    classics: readClassicsData(),
     descriptions: readDescriptionsData(),
     games: readGamesData(),
     platforms: readPlatformsData(),
