@@ -80,7 +80,7 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
 
           <div>
             <h4 className="uppercase select-none">Tempo jogado</h4>
-            <p className="text-textDarkDs select-none">
+            <p className="select-none">
               {' '}
               {formatDuration(
                 userData.playHistory.find((playItem) => playItem.path === file.gameRelativePathOrFolder)
@@ -113,8 +113,10 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
                   disabled={runnerStatus.isRunning}
                   onClick={() => {
                     if (file.type === 'file') {
+                      const parts = file.gameRelativePathOrFolder.split('/')
+                      const filename = parts[parts.length - 1]
                       handleStartGame(
-                        runner.command.replace('$gamePath', `${PATH_CONTENT_GAMES_FOLDER}${file.gameRelativePath}`),
+                        runner.command.replace('$gamePath', `${PATH_CONTENT_GAMES_FOLDER}${file.gameRelativePath}`).replace('$fileName', filename),
                       );
                     } else {
                       handleStartGame(
@@ -122,8 +124,9 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
                       );
                     }
                   }}
-                  className="select-none w-full flex gap-2 items-center justify-center bg-backgroundButton text-textNormal px-6 py-4 rounded-lg hover:bg-backgroundButtonHover transition-colors duration-75 mt-2">
+                  className="select-none w-full flex gap-2 items-center justify-center bg-backgroundButton px-6 py-4 rounded-lg hover:bg-backgroundButtonHover transition-colors duration-75 mt-2">
                   {runnerStatus.isRunning ? 'Runner Executando...' : `Jogar com ${runner.name}`} <Icon.Play />
+
                 </ButtonWithSound>
               </div>
             ))}

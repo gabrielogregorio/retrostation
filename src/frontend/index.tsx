@@ -6,6 +6,8 @@ import { ContextStateRunnerProvider } from './global/contexts/ContextStateRunner
 import { ContextUserDataProvider } from './global/contexts/ContextUserDataProvider';
 import { App } from './app';
 import { ContextGlobalDataProvider } from './global/contexts/ContextGlobalUtiLDataProvider';
+import { ContextInLoadingProvider } from '@/global/contexts/ContextInLoadingProvider';
+import { ContextPaginationProvider } from '@/global/contexts/ContextPaginationProvider';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -14,7 +16,11 @@ root.render(
       <ContextStateRunnerProvider>
         <ContextUserDataProvider>
           <ContextGlobalDataProvider>
-            <App />
+            <ContextInLoadingProvider>
+              <ContextPaginationProvider>
+                <App />
+              </ContextPaginationProvider>
+            </ContextInLoadingProvider>
           </ContextGlobalDataProvider>
         </ContextUserDataProvider>
       </ContextStateRunnerProvider>

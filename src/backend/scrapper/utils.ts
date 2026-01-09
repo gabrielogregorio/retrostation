@@ -38,10 +38,16 @@ export const getAllImagesResolved = (): {
 
       return !shouldBeIgnore;
     })
-    .map((urlRelative) => {
-      const name = getNameFromFilename(urlRelative);
+    .map((urlRelativeRaw) => {
+      const urlRelative = urlRelativeRaw.replace(/\\/g, '/');
 
-      return { urlRelative: urlRelative.replace(/\\/g, '/'), search: onlyLettersAndNumbers(name) };
+      const parts = urlRelative.split('/');
+      const search = `${onlyLettersAndNumbers(parts[parts.length - 2])}/${onlyLettersAndNumbers(parts[parts.length - 1].split('.')[0])}`;
+
+      return {
+        urlRelative,
+        search,
+      };
     });
 
 type ReturnGameFile = { urlRelativeFile: string; folder: string; type: 'file' };

@@ -35,6 +35,10 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+// Para deixar fontes bonitas
+app.commandLine.appendSwitch('enable-font-antialiasing');
+app.commandLine.appendSwitch('force-device-scale-factor', '1');
+
 createConfig();
 // #####################################################
 // # =================== CUSTOM SETUP =============== #

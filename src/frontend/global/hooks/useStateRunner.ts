@@ -23,6 +23,20 @@ export const useUniqueGlobalConfigCronometer = () => {
     const unsubscribeStop = window.electron.whenRunnerStop(() => {
       const gameByIndex = userDataRef.current.playHistory.findIndex((game) => game.path === runnerStatus.path);
       if (gameByIndex === -1) {
+        const gamesUpdated = [
+          ...userDataRef.current.playHistory,
+          {
+            path: runnerStatus.path,
+            elapsedSeconds: userTimerRef.current.elapsedSeconds,
+          },
+        ];
+        userTimerRef.current.reset();
+
+        updateUserData({
+          ...userDataRef.current,
+          playHistory: gamesUpdated,
+        });
+
         setRunnerStatus({
           isRunning: false,
           path: '',
@@ -60,7 +74,7 @@ export const useUniqueGlobalConfigCronometer = () => {
       unsubscribeStop();
       unsubscribeStart();
     };
-  }, []);
+  }, [runnerStatus]);
 };
 
 export const useGetStateRunner = () => {

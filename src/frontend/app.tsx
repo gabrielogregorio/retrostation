@@ -10,7 +10,7 @@ export const App = () => {
       <div className="z-[20] !backdrop-blur-3xl shadow-lg rounded-lg overflow-hidden scroll-smooth relative flex items-center justify-center h-screen">
         <GlobalConfig />
 
-        {!isLoaded ? <div className="justify-center text-3xl select-none" key="loading" /> : undefined}
+        {!isLoaded ? <div className="justify-center text-size6 select-none" key="loading" /> : undefined}
 
         <Launcher
           isLoaded={() => {

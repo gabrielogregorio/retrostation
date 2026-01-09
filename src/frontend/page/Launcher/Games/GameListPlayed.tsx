@@ -46,14 +46,14 @@ export const GameListPlayed = ({ games, setGameSelected }: LauncerItemProps) => 
                   className="object-cover h-[90px] rounded-lg"
                 />
               ) : (
-                <div className="text-textNormal flex items-center justify-center h-[90px] text-sm select-none">
+                <div className="flex items-center justify-center h-[90px] text-size1 select-none">
                   Sem imagens
                 </div>
               )}
             </div>
 
             <div className="flex flex-col justify-between h-full">
-              <h3 className="text-textNormal text-left text-base font-bold  capitalize">{game.name}</h3>
+              <h3 className="text-left text-size2 font-bold  capitalize">{game.name}</h3>
               {playHistoric ? (
                 <div className="flex justify-start items-center gap-2">
                   <div>
@@ -62,7 +62,7 @@ export const GameListPlayed = ({ games, setGameSelected }: LauncerItemProps) => 
 
                   <div>
                     <h4 className="uppercase text-left">Tempo jogado</h4>
-                    <p className="text-textDarkDs text-left">
+                    <p className="text-left">
                       {' '}
                       {formatDuration(
                         userData.playHistory.find((playItem) =>

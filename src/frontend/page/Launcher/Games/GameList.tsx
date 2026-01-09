@@ -52,7 +52,7 @@ export const GameList = ({ games, setGameSelected }: LauncerItemProps) => {
                   className="object-cover w-full h-full min-h-[350px] max-h-[350px] rounded-lg hover:contrast-125 transition-all duration-200"
                 />
               ) : (
-                <div className="text-textNormal flex items-center justify-center h-full min-h-[350px] max-h-[350px] text-sm select-none">
+                <div className="flex items-center justify-center h-full min-h-[350px] max-h-[350px] text-size1 select-none">
                   Sem imagens
                 </div>
               )}

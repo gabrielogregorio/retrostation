@@ -56,15 +56,15 @@ export const SyncFiles = () => {
   }, []);
 
   return (
-    <div>
-      <ButtonWithSound
-        type="button"
-        onClick={() => handleRunScrapper()}
-        className="flex items-center justify-center group">
-        <Icon.Refresh
-          className={`group-hover:stroke-textHighlited transition-all text-2xl ${scrapperResult.inScrapping ? 'animate-spin' : ''}`}
-        />
-      </ButtonWithSound>
-    </div>
+
+    <ButtonWithSound
+      type="button"
+      onClick={() => handleRunScrapper()}
+      className="flex items-center justify-center group">
+      <Icon.Refresh
+        className={`group-hover:stroke-textHighlited transition-all text-size5 ${scrapperResult.inScrapping ? 'animate-spin' : ''}`}
+      />
+    </ButtonWithSound>
+
   );
 };

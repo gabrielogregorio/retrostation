@@ -21,7 +21,7 @@ export const GamePlayer = ({
     <Modal.DialogPanel className="h-[80vh] overflow-y-scroll vertical-scrollbar w-[600px] px-8 py-5">
       <div className="flex items-center justify-end">
         <ButtonWithSound onClick={onClose} aria-label="Fechar Modal">
-          <Icon.XMark className="size-7 text-textNormal" />
+          <Icon.XMark className="size-7" />
         </ButtonWithSound>
       </div>
 
@@ -40,12 +40,12 @@ export const GamePlayer = ({
           </div>
         ) : undefined}
 
-        <Modal.DialogTitle className="text-xl font-bold flex items-center mt-2">{game?.name}</Modal.DialogTitle>
+        <Modal.DialogTitle className="text-size4 font-bold flex items-center mt-2 select-none">{game?.name}</Modal.DialogTitle>
 
         <Modal.Description className="mt-2 select-none">{game?.description}</Modal.Description>
 
         <div className="flex gap-2 mt-4">
-          <p className=" text-textNormal rounded-lg flex gap-2 select-none">
+          <p className=" rounded-lg flex gap-2 select-none">
             <Icon.ComputerDesktop />
 
             {game?.folder}

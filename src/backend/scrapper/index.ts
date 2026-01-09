@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { PATH_CONTENT_GAMES_FOLDER } from '@/config/index';
 import { readDescriptionsData } from '@/loaders/descriptions';
@@ -44,16 +45,21 @@ export const runScrapper = async () => {
       const gameItem = gamesByName[gameName];
 
       const searchNameOptimized = onlyLettersAndNumbers(gameName);
-      const findDescriptions = descriptions.find((item) => item.search === searchNameOptimized);
+      const findDescriptions = descriptions.find((item) => item.search === searchNameOptimized); // mudar
 
       const findImageRealName = findDescriptions?.realName
-        ? findImageFromGameByNameOptimized(images, onlyLettersAndNumbers(findDescriptions?.realName))
+        ? findImageFromGameByNameOptimized(
+            images,
+            `${onlyLettersAndNumbers(folder)}/${onlyLettersAndNumbers(findDescriptions?.realName)}`,
+          )
         : undefined;
 
       const findImageSearch = searchNameOptimized
-        ? findImageFromGameByNameOptimized(images, onlyLettersAndNumbers(searchNameOptimized))
+        ? findImageFromGameByNameOptimized(
+            images,
+            `${onlyLettersAndNumbers(folder)}/${onlyLettersAndNumbers(gameName)}`,
+          )
         : undefined;
-
       const findImage = findImageSearch || findImageRealName;
 
       const description = findDescriptions?.description || '';
@@ -73,11 +79,17 @@ export const runScrapper = async () => {
         };
       });
 
+      let image;
+
+      if (findImage?.urlRelative) {
+        const parts = findImage?.urlRelative.split('/');
+        image = `${parts[parts.length - 2]}/${parts[parts.length - 1]}`;
+      }
       games.push({
         name: findDescriptions?.realName || gameName,
         folder,
         description,
-        image: findImage?.urlRelative ? findImage?.urlRelative.split('/').slice(-1)[0] : undefined,
+        image,
         files,
         searchNameOptimized: onlyLettersAndNumbers(findDescriptions?.realName || searchNameOptimized),
         fullTextSarchNameOptimized: `
