@@ -4,19 +4,19 @@
 
 Esse é um frontend com scrapper local que conecta emuladores a jogos, com o foco em jogos retro, e podendo ser expandido a quase qualquer formato.
 
-Esse frontend não tem os jogos, imagens, descrições, emuladores ou qualquer dado proprietário, nem fornece apis para baixar automaticamente por questões legais, sendo apenas um frontend onde você pode adicionar os jogos, as imagens, e realizar as configurações necessárias explicadas na seção de configurações.
+> Esse frontend não tem os jogos, imagens, descrições, emuladores ou qualquer dado proprietário, nem fornece apis para baixar automaticamente por questões legais, sendo apenas um frontend onde você pode adicionar os jogos, as imagens, e realizar as configurações necessárias explicadas na seção de configurações.
 
 As configurações podem ser automatizadas com scripts externos, mas não está no escopo desse repositório.
 
 ## Roda no meu PC?
 
-Esse projeto é feito para PC Windows e Linux, e funciona em ambas as plataformas, provavelmente deve ser possível realizar compilações para MacOs, já que esse projeto usa o [electronjs](https://www.electronjs.org/pt/), mas não tenho mac ainda.
+Esse projeto é feito para PC Windows e Linux, e funciona em ambas as plataformas, provavelmente deve ser possível realizar compilações para MacOs, já que esse projeto usa o [electronjs](https://www.electronjs.org/pt/).
 
 ## Rodando e configurando o retrostation
 
 Abaixo um tutorial completo sobre como configurar os jogos, runners e outros detalhes.
 
-Runners são qualquer forma de rodar os seus arquivos, no contexto de retro emulação, a maioria dos runners serão emuladores, dos quais você irá baixar e configurar por sua conta.
+> Runners são qualquer forma de rodar os seus arquivos, no contexto de retro emulação, a maioria dos runners serão emuladores, dos quais você irá baixar e configurar por sua conta.
 
 1. Baixe o arquivo .exe pelas releases [link assim que tiver release].
 2. Execute o arquivo retrostation.bat, ele irá executar o executável e manterá a CLI presa para você acompanhar os logs para o caso de problemas e dev report.
@@ -27,8 +27,12 @@ Nesse começo, o aplicativo criará diversas pastas, ficando dessa forma
 
 ### assets
 
-- games - coloque imagens otimizadas de jogos aqui
+- games/formato/ - coloque imagens otimizadas de jogos aqui
 - platforms - coloque imagens das plataformas aqui
+
+Exemplo de como pode ficar essa pasta
+
+**games/SWF_FLASH/pinguinsWars.png**
 
 > Otimize suas imagens, minha sugestão é você usar webp com pelo menos 80% de perda de qualidade. Capas de jogos podem ser extremamente pesadas e deixarem o seu computador lento.
 
