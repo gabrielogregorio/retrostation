@@ -11,7 +11,7 @@ export const readGamesData = (): GamesType[] =>
       name: 'Esse jogo se chama Nem ca vaca tussa',
       folder: 'SWF_FLASH',
       description: 'Uma descrição que você queira',
-      image: 'flashPlayerGameExample.webp',
+      image: '/SWF_FLASH/flashPlayerGameExample.webp',
       files: [
         {
           type: 'file',
@@ -28,7 +28,7 @@ export const readGamesData = (): GamesType[] =>
       folder: 'EXE_MSDOS',
       description: '',
 
-      image: 'exampleMsDosGame.webp',
+      image: '/EXE_MSDOS/exampleMsDosGame.webp',
       files: [
         {
           type: 'folder',
