@@ -20,7 +20,7 @@ const IconArrow = ({ className = '' }: { className?: string }) => <svg
 
 const seedDay = Number(new Date().toLocaleString().split(',')[0].replace(/\//g, ''));
 
-export const SideMenu = ({ gamesByPlatform }: { gamesByPlatform: GamesType[] }) => {
+export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesType[] }) => {
   const { filters, setFilters } = useFiltersContext();
   const { globalData } = useGlobalDataContext();
   const scrollRef = useRef<HTMLDivElement>(null);

@@ -3,7 +3,7 @@ import { PlatformReturnOsVersionType } from '@/backend/getVBersion';
 import { useGlobalDataContext } from '@/global/contexts/ContextGlobalUtiLDataProvider';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { Games } from '@/page/Launcher/Games';
-import { SideMenu } from '@/page/Launcher/SideMenu';
+import { SearchComponent } from '@/page/Launcher/SearchComponent';
 
 
 export const Launcher = ({ isLoaded }: { isLoaded: () => void }) => {
@@ -42,9 +42,7 @@ export const Launcher = ({ isLoaded }: { isLoaded: () => void }) => {
   return (
     <div className="min-w-screen min-h-screen min-w-[100vw] max-w-[100vw] flex items-center flex-col justify-center scroll-smooth overflow-hidden">
 
-
-      <SideMenu gamesByPlatform={gamesByPlatform} />
-
+      <SearchComponent gamesByPlatform={gamesByPlatform} />
 
       <div
         className="w-full flex-1 px-4 overflow-y-scroll scroll-smooth vertical-scrollbar"
