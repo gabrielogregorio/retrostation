@@ -5,8 +5,8 @@ module.exports = {
     extend: {
       colors: {
         textHighlited: '#ffffff',
-        backgroundButton: '#586f96',
-        backgroundButtonHover: '#323a4b',
+        backgroundButton: 'rgb(107 114 128 / 0.2)',
+        backgroundButtonHover: 'rgb(107 114 128 / 0.3)',
       },
       fontSize: {
         size1: '15px',
