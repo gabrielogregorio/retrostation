@@ -2,4 +2,5 @@
 cd /d "%~dp0\bin"
 start "" /wait retrostation.exe
 echo.
-echo Running retrostation
+echo Press Enter to exit
+pause >nul
