@@ -97,6 +97,10 @@ config.hooks = {
         }
       }
     }
+
+    // move to base
+    console.log('MOVE BUILD TO BASE');
+    await fs.copy(path.resolve('./out'), path.resolve('../'));
   },
 };
 
