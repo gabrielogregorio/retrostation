@@ -45,7 +45,7 @@ export const PlataformList = () => {
                 platform: null,
               }));
             }}
-            className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-full duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform === null ? 'bg-backgroundButtonHover' : ''}`}>
+            className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-auto duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform === null ? 'bg-backgroundButtonHover' : ''}`}>
             <div
               className={`text-size4 whitespace-nowrap w-full text-ellipsis text-left ${filters.platform === null ? 'text-textHighlited' : ''}`}>
               TODOS
@@ -59,14 +59,13 @@ export const PlataformList = () => {
             key={platform.name}
             title={platform.folder.join('  |  ')}
             // data-nodo={`data-nodo-${platform.name}`}
-
             onClick={() => {
               setFilters((prev) => ({
                 ...prev,
                 platform,
               }));
             }}
-            className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-full duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform?.folder === platform.folder ? 'bg-backgroundButtonHover' : ''}`}>
+            className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-auto duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform?.folder === platform.folder ? 'bg-backgroundButtonHover' : ''}`}>
             <div
               className={`text-size4 whitespace-nowrap w-full text-ellipsis text-left ${filters.platform?.folder === platform.folder ? 'text-textHighlited' : ''}`}>
               {platform.name}

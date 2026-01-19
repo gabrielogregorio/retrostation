@@ -85,11 +85,11 @@ export const createConfig = () => {
 
   copyIfNotExistsAndDirEmpty(
     getResourcePath('initialSetup', 'flashPlayerGameExample.webp'),
-    `${getLocalPath()}${PATH_GAME_ASSETS_FOLDER}/flashPlayerGameExample.webp`,
+    `${getLocalPath()}${PATH_GAME_ASSETS_FOLDER}/SWF_FLASH/flashPlayerGameExample.webp`,
   );
 
   copyIfNotExistsAndDirEmpty(
     getResourcePath('initialSetup', 'exampleMsDosGame.webp'),
-    `${getLocalPath()}${PATH_GAME_ASSETS_FOLDER}/exampleMsDosGame.webp`,
+    `${getLocalPath()}${PATH_GAME_ASSETS_FOLDER}/EXE_MSDOS/exampleMsDosGame.webp`,
   );
 };
