@@ -50,7 +50,7 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
       <div>
         <div className="flex justify-start items-center gap-2 mt-2">
           <ButtonWithSound
-            className="flex gap-2 items-center"
+            className='flex gap-2 px-2 pl-0 py-1 items-center justify-center border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 text-size3 font-semibold border-transparent'
             onClick={() => {
               updateUserData({
                 ...userData,
@@ -66,8 +66,12 @@ export const GameRun = ({ file, runnersByFolderAvailableInThisPlatform }: Props)
             )}
           </ButtonWithSound>
 
-          <div>
-            <h4 className="break-all">{file.gameRelativePathOrFolder}</h4>
+          <div className='overflow-hidden'>
+            <ButtonWithSound
+              className='break-all whitespace-nowrap gap-2 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 text-size3 font-semibold border-transparent'
+              onClick={() => window.electron.openWithFileSelected(`../content/games/${file.gameRelativePathOrFolder}`)}>
+              {file.gameRelativePathOrFolder}
+            </ButtonWithSound>
           </div>
         </div>
       </div>

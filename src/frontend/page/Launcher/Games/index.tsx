@@ -38,11 +38,10 @@ export const Games = ({ runnersByFolderAvailableInThisPlatform }: LauncerItemPro
         onClose={() => setGameSelected(null)}
         runnersByFolderAvailableInThisPlatform={runnersByFolderAvailableInThisPlatform}
       />
-
       <div
-        className="fixed right-0 z-20 left-0  top-[209px] overflow-y-scroll px-4 vertical-scrollbar"
+        className="fixed right-0 z-20 left-0  top-[196px] overflow-y-scroll px-4 vertical-scrollbar"
         style={{
-          height: windowSize.height - 209,
+          height: windowSize.height - 196,
           right: '0px',
         }}>
         <div>

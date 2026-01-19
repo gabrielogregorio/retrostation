@@ -20,6 +20,7 @@ const ApiBridge = {
   runScrapper: () => ipcRenderer.send(EVENT_NAMES.runScrapper),
   whenRunScrapperRespond: (callback: (output: { success: boolean; error: unknown }) => void) => {
     const listener = (_event, output) => callback(output);
+
     ipcRenderer.on(EVENT_NAMES.outputRunScrapper, listener);
 
     return () => {
@@ -51,7 +52,7 @@ const ApiBridge = {
   getGlobalData: () => ipcRenderer.invoke(EVENT_NAMES.getGlobalData),
 
   updateUserData: (updatedData: UserType) => ipcRenderer.send(EVENT_NAMES.updateUserData, updatedData),
-  
+
   whenUserDataUpdate: (callback: (data: UserType) => void) => {
     const listener = (_event, data) => callback(data);
 
@@ -62,13 +63,18 @@ const ApiBridge = {
     };
   },
   whenGameDataUpdated: (callback: (data: GamesType[]) => void) => {
-    const listener = (_event, data) => callback(data);
+    const listener = (_event, data: GamesType[]) => {
+      callback(data);
+    };
     ipcRenderer.on(EVENT_NAMES.gameDataUpdated, listener);
 
     return () => {
       ipcRenderer.removeListener(EVENT_NAMES.gameDataUpdated, listener);
     };
   },
+
+  openFolder: (relativePathToOpen: string) => ipcRenderer.invoke('openFolder', relativePathToOpen),
+  openWithFileSelected: (relativePathToOpen: string) => ipcRenderer.invoke('openWithFileSelected', relativePathToOpen),
 };
 
 contextBridge.exposeInMainWorld('electron', ApiBridge);

@@ -18,9 +18,7 @@ export const PATH_CONTENT_RUNNERS_FOLDER = `${LOCAL_FILES}content/runners`;
 export const FILE_PATH_PLATFORMS = `${LOCAL_FILES}config/platforms.json`;
 export const FILE_PATH_DESCRIPTIONS = `${LOCAL_FILES}config/descriptions.json`;
 export const FILE_PATH_RUNNER_BY_FOLDER = `${LOCAL_FILES}config/runnersByFolder.json`;
-
-// ================ DATA ================
-export const FILE_PATH_USER = `${LOCAL_FILES}data/user.json`;
+export const FILE_PATH_USER = `${LOCAL_FILES}config/user.json`;
 
 // ================ CACHE ===============
 export const FILE_PATH_GAMES = `${LOCAL_FILES}cache/games.json`;

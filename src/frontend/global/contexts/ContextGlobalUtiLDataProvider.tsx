@@ -5,7 +5,7 @@ const ContextGlobalData = createContext<{
   globalData: GlobalDataType;
   setUpdateGlobalData: React.Dispatch<React.SetStateAction<GlobalDataType>>;
 }>({
-  setUpdateGlobalData: () => {},
+  setUpdateGlobalData: () => { },
   globalData: {
     descriptions: [],
     games: [],

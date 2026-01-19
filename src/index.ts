@@ -1,7 +1,7 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { exec } from 'child_process';
-import pathNode from 'path';
 import { Worker } from 'worker_threads';
+import path from 'path';
 import { createConfig } from '@/config/createConfigFolders';
 import { EVENT_NAMES } from '@/config/eventNames';
 import { dispatchGameDataUpdated } from '@/events/dispatchGameDataUpdated';
@@ -72,16 +72,29 @@ const createWindow = (): void => {
 // # ================== CUSTOM EVENTS =============== #
 // #####################################################
 
+ipcMain.handle('openFolder', async (_event, relativePathToOpen) => {
+  await shell.openPath(path.resolve('./', relativePathToOpen));
+});
+
+ipcMain.handle('openWithFileSelected', async (_event, relativePathToOpen) => {
+  await shell.showItemInFolder(path.resolve('./', relativePathToOpen));
+});
+
+
+
 ipcMain.on(EVENT_NAMES.runCliCommands, (event, payload) => {
   console.log(`CLI: ${payload.command}`);
 
   event.reply(EVENT_NAMES.runnerWasStarted, { path: payload.path });
 
-  const absoluteCommand = pathNode.resolve(getLocalRunNode(), payload.command);
+  const absoluteCommand = path.resolve(getLocalRunNode(), payload.command);
   console.log(`CLI: PATH RESOLVED: ${absoluteCommand}`);
 
   const processCliCommand = exec(absoluteCommand, (error: Error | null, stdout: string, stderr: string) => {
     if (error) {
+      console.error('❌ ### ERROR ####❌');
+      console.error(error);
+      console.error('❌ ### ERROR ####❌');
       event.reply(EVENT_NAMES.commandOutputResponse, `Erro: ${stderr}`);
       return;
     }
@@ -101,21 +114,27 @@ ipcMain.on(EVENT_NAMES.runCliCommands, (event, payload) => {
 ipcMain.on(EVENT_NAMES.runScrapper, (event) => {
   console.log('SCRAPPER: START');
 
-  const pathWorkerScrapper = pathNode.resolve(getLocalRunNode(), './static/workers/backend/scrapper.js');
+  const pathWorkerScrapper = path.resolve(getLocalRunNode(), './static/workers/backend/scrapper.js');
 
   console.log('SCRAPPER: PATH WORKER', pathWorkerScrapper);
-
+  const wc = event.sender;
   const worker = new Worker(pathWorkerScrapper);
 
   worker.on('message', (msg: { type: string; games: GamesType[] }) => {
     if (msg.type === 'done') {
-      console.log('SCRAPPER: DONE');
+      console.log(`SCRAPPER: DONE, games = ${msg.games.length}`);
       dispatchGameDataUpdated(msg.games);
-      event.reply(EVENT_NAMES.outputRunScrapper, { success: true });
+      console.log('SCRAPPER: FINISHED DISPATCH');
+
+      wc.send(EVENT_NAMES.outputRunScrapper, { success: true });
+      console.log('SCRAPPER: REPLY');
     } else if (msg.type === 'error') {
       console.log('SCRAPPER: ERROR RUN');
-      event.reply(EVENT_NAMES.outputRunScrapper, { success: false, error: 'Error on run scrapper' });
+
+      wc.send(EVENT_NAMES.outputRunScrapper, { success: false, error: 'Error on run scrapper' });
     }
+
+    console.log('result message msg?.games?.length =', `${msg?.games?.length} type ${msg?.type}`);
   });
 
   worker.on('error', (err) => {

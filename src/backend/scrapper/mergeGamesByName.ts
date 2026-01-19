@@ -3,23 +3,23 @@ import { getShowName } from './utilsv2';
 type baseType = { folder: string; nameRaw: string };
 
 export const mergeGamesByName = <T extends baseType>(games: T[]) => {
-  const object: { [folder: string]: { [name: string]: T[] } } = {};
+  const objectItem: { [folder: string]: { [name: string]: T[] } } = {};
 
   games.forEach((game) => {
     const { folder } = game;
 
-    if (!object[folder]) {
-      object[folder] = {};
+    if (!objectItem[folder]) {
+      objectItem[folder] = {};
     }
 
     const name = getShowName(game.nameRaw);
 
-    if (object[folder][name]) {
-      object[folder][name].push({ ...game });
+    if (objectItem[folder][name]) {
+      objectItem[folder][name].push({ ...game });
     } else {
-      object[folder][name] = [{ ...game }];
+      objectItem[folder][name] = [{ ...game }];
     }
   });
 
-  return object;
+  return objectItem;
 };

@@ -12,18 +12,18 @@ import { ContextPaginationProvider } from '@/global/contexts/ContextPaginationPr
 const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <ContextFiltersProvider>
-      <ContextStateRunnerProvider>
-        <ContextUserDataProvider>
-          <ContextGlobalDataProvider>
+    <ContextGlobalDataProvider>
+      <ContextFiltersProvider>
+        <ContextStateRunnerProvider>
+          <ContextUserDataProvider>
             <ContextInLoadingProvider>
               <ContextPaginationProvider>
                 <App />
               </ContextPaginationProvider>
             </ContextInLoadingProvider>
-          </ContextGlobalDataProvider>
-        </ContextUserDataProvider>
-      </ContextStateRunnerProvider>
-    </ContextFiltersProvider>
+          </ContextUserDataProvider>
+        </ContextStateRunnerProvider>
+      </ContextFiltersProvider>
+    </ContextGlobalDataProvider>
   </React.StrictMode>,
 );

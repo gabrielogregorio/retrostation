@@ -7,7 +7,9 @@ import { GamesType } from '@/types/all';
  * new data
  */
 export const dispatchGameDataUpdated = (updatedData: GamesType[]) => {
-  BrowserWindow.getAllWindows().forEach((win) => {
+  const screens = BrowserWindow.getAllWindows();
+
+  screens.forEach((win) => {
     win.webContents.send(EVENT_NAMES.gameDataUpdated, updatedData);
   });
 };

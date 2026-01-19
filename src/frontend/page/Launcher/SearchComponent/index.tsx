@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ButtonWithSound } from '@/components/organisms/ButtonSound';
 import { useFiltersContext } from '@/global/contexts/ContextFiltersProvider';
 import { useGlobalDataContext } from '@/global/contexts/ContextGlobalUtiLDataProvider';
-import { tailwindMerge } from '@/libs/tailwindMerge';
-import { handleClickSound, handleHoverSound, handleKeyboardSound } from '@/components/organisms/ButtonSound/sound';
+import { handleClickSound, handleKeyboardSound } from '@/components/organisms/ButtonSound/sound';
 import { SyncFiles } from '@/components/organisms/SyncFiles';
 import { callFilterWorker } from '@/frontend/workers/callFilterWorker';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -13,17 +12,16 @@ import { useUserData } from '@/global/contexts/ContextUserDataProvider';
 import { useInLoadingContext } from '@/global/contexts/ContextInLoadingProvider';
 import { usePaginationContext } from '@/global/contexts/ContextPaginationProvider';
 import { GamesType } from '@/types/all';
+import { PlataformList } from '@/page/Launcher/PlataformList';
+import { Modal } from '@/components/molecules/Modal';
+import { FILE_PATH_DESCRIPTIONS, FILE_PATH_GAMES, FILE_PATH_PLATFORMS, FILE_PATH_RUNNER_BY_FOLDER, FILE_PATH_USER, PATH_CONTENT_GAMES_FOLDER, PATH_CONTENT_RUNNERS_FOLDER, PATH_GAME_ASSETS_FOLDER, PATH_PLATFORM_ASSETS_FOLDER } from '@/config/index';
 
-const IconArrow = ({ className = '' }: { className?: string }) => <svg
-  className={tailwindMerge(className)}
-  stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M217.9 256L345 129c9.4-9.4 9.4-24.6 0-33.9-9.4-9.4-24.6-9.3-34 0L167 239c-9.1 9.1-9.3 23.7-.7 33.1L310.9 417c4.7 4.7 10.9 7 17 7s12.3-2.3 17-7c9.4-9.4 9.4-24.6 0-33.9L217.9 256z" /></svg>
 
 const seedDay = Number(new Date().toLocaleString().split(',')[0].replace(/\//g, ''));
 
 export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesType[] }) => {
   const { filters, setFilters } = useFiltersContext();
   const { globalData } = useGlobalDataContext();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { userData } = useUserData();
   const [input, setInput] = useState('');
   const { debouncedValue, isLoading: isLoadingDebouncing } = useDebounce(onlyLettersAndNumbers(input));
@@ -31,18 +29,12 @@ export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesTyp
   const workerRef = useRef<Worker>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const scrollLeft = () => {
-    scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
-  };
 
   useEffect(() => {
     if (workerRef.current) {
       workerRef.current.terminate();
     }
+
 
     const handler = async () => {
       setIsLoading(true);
@@ -86,77 +78,92 @@ export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesTyp
     updateLoadingState(isLoadingDebouncing || isLoading)
   }, [isLoadingDebouncing, isLoading])
 
-
+  const [devOptionsIsOpened, setDevOptionsIsOppened] = useState<boolean>(false)
+  const gamesWithoutImages = useMemo(() => gamesFiltered.filter((game) => !game.image).map((game) => game.name), [gamesFiltered])
+  
   return (
 
     <div>
-
-      <div
-        className="fixed top-0 left-0 right-0 z-20 shadow-lg border-b-2 border-black/20">
-        <div className='flex min-h-[80px]' >
-          <ButtonWithSound onClick={scrollLeft} className='min-w-[64px] flex items-center justify-center '>
-            <IconArrow className='text-size6 fill-white ' />
-          </ButtonWithSound>
-
-          <div ref={scrollRef} className='flex flex-row w-full items-center  overflow-x-scroll scroll-smooth horizontal-hidden-scrollbar'
-            style={{ maxWidth: 'calc(100vw - 64px - 64px)' }}
-          >
-            <ButtonWithSound
-              key="all"
-              onClick={() => {
-                setFilters((prev) => ({
-                  ...prev,
-                  platform: null,
-                }));
-              }}
-              className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-full duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform === null ? 'bg-backgroundButtonHover' : ''}`}>
-              <div
-                className={`text-size4 whitespace-nowrap w-full text-ellipsis text-left ${filters.platform === null ? 'text-textHighlited' : ''}`}>
-                TODOS
-              </div>
-
+      <Modal.Root isOpen={devOptionsIsOpened} onClose={() => setDevOptionsIsOppened(false)}>
+        <Modal.Content>
+          <Modal.DialogPanel className='flex flex-col  px-8 py-5'>
+            <Modal.DialogTitle className='text-center text-2xl'>Opções Rápidas</Modal.DialogTitle>
+            <hr />
+            <ButtonWithSound onClick={() => window.electron.openFolder(PATH_GAME_ASSETS_FOLDER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Galery />    Abrir Game Assets
             </ButtonWithSound>
 
-            {globalData.platforms.map((platform) => (
-              <ButtonWithSound
-                key={platform.name}
-                onClick={() => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    platform,
-                  }));
-                }}
-                className={`select-none hover:bg-backgroundButtonHover  h-[80px] inline-block w-full duration-75 transition-all py-[8px] uppercase px-4 ${filters.platform?.folder === platform.folder ? 'bg-backgroundButtonHover' : ''}`}>
-                <div
-                  className={`text-size4 whitespace-nowrap w-full text-ellipsis text-left ${filters.platform?.folder === platform.folder ? 'text-textHighlited' : ''}`}>
-                  {platform.name}
-                </div>
 
-              </ButtonWithSound>
-            ))}
-          </div>
+            <ButtonWithSound onClick={() => window.electron.openFolder(PATH_PLATFORM_ASSETS_FOLDER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Galery />     Abrir Plataforms Assets
+            </ButtonWithSound>
 
-          <ButtonWithSound onClick={scrollRight} className='min-w-[64px] flex items-center justify-center '>
-            <IconArrow className='text-size6 fill-white rotate-180' />
-          </ButtonWithSound>
-        </div>
+            <hr />
+            <ButtonWithSound onClick={() => window.electron.openFolder(FILE_PATH_PLATFORMS)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Json /> Abrir plataforms.json
+            </ButtonWithSound>
+
+            <ButtonWithSound onClick={() => window.electron.openFolder(FILE_PATH_DESCRIPTIONS)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Json />    Abrir descriptions.json
+            </ButtonWithSound>
+
+            <ButtonWithSound onClick={() => window.electron.openFolder(FILE_PATH_RUNNER_BY_FOLDER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Json />     Abrir runnersByFolder.json
+            </ButtonWithSound>
+
+            <ButtonWithSound onClick={() => window.electron.openFolder(FILE_PATH_USER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Json />      Abrir user.json
+            </ButtonWithSound>
+
+
+
+            <ButtonWithSound onClick={() => window.electron.openFolder(FILE_PATH_GAMES)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent' >
+              <Icon.Json />     Abrir cache de games, games.json
+            </ButtonWithSound>
+
+
+            <hr />
+            <ButtonWithSound onClick={() => window.electron.openFolder(PATH_CONTENT_GAMES_FOLDER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Game />      Abrir pasta de jogos
+            </ButtonWithSound>
+
+            <ButtonWithSound onClick={() => window.electron.openFolder(PATH_CONTENT_RUNNERS_FOLDER)} className='flex items-center justify-start gap-2 !mt-0 py-2 text-size3 border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 px-2 font-semibold border-transparent'>
+              <Icon.Emulator />        Abrir pasta de emuladores
+            </ButtonWithSound>
+
+            <div className='flex flex-col'>
+              <div>
+                Games sem Imagem desse filtro {gamesWithoutImages.length}
+              </div>
+
+              <textarea name="" id="" rows={10} className='bg-transparent text-white border-2 border-white/25 rounded-lg vertical-scrollbar' value={gamesWithoutImages.join('\n')} />
+            </div>
+          </Modal.DialogPanel>
+        </Modal.Content>
+      </Modal.Root>
+
+      <div
+        className="fixed top-0 left-0 right-0 z-50 shadow-md border-b backdrop-blur-lg border-[#494e59] bg-black/20">
+
+        <PlataformList />
+
 
         {/* search */}
-        <div className="flex items-center justify-center mt-4 mx-20 ">
-          <div className="bg-backgroundButton rounded-3xl w-full relative group hover:bg-backgroundButtonHover">
+        <div className="flex items-center justify-center mt-[12px] pl-[48px]">
+          <div className="bg-none rounded-3xl w-full relative group">
             <input
               type="text"
               name="BARRA DE PESQUISA"
               id="BARRA DE PESQUISA"
               value={input}
-              onMouseEnter={handleHoverSound}
+              // onMouseEnter={handleHoverSound}
               onClick={handleClickSound}
               onChange={(event) => {
                 setInput(event.target.value);
                 handleKeyboardSound();
               }}
-              placeholder="pinguins..."
-              className="w-full px-6 py-2 select-none  bg-transparent text-size4 focus:outline-none placeholder:text-gray-300"
+              placeholder="Pesquisar..."
+              className="w-full px-4 py-2 select-none  bg-transparent text-size4 focus:outline-none placeholder:text-gray-500 text-gray-200"
             />
 
             {input ? (
@@ -168,7 +175,7 @@ export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesTyp
             ) : undefined}
           </div>
 
-          <div className="flex items-center justify-center pl-4">
+          <div className="flex items-center justify-center pl-4 pr-8">
             <SyncFiles />
 
             <ButtonWithSound
@@ -183,9 +190,13 @@ export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesTyp
                 }
               }}
               name='favoritos'
-              className={`cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 py-2 px-6  text-size5 font-semibold ${filters.screen === 'favorites' ? ' text-textHighlited border-textHighlited' : 'border-transparent'}`}>
-              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z" /><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" /></svg>
+              className={`border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 py-2  w-[60px] flex items-center justify-center text-size5 font-semibold ${filters.screen === 'favorites' ? ' text-textHighlited border-textHighlited' : 'border-transparent'}`}>
 
+              {filters.screen === 'favorites' ? (
+                <Icon.Star className="fill-yellow-400 stroke-white/20" />
+              ) : (
+                <Icon.Star className="stroke-current" />
+              )}
 
             </ButtonWithSound>
 
@@ -201,16 +212,43 @@ export const SearchComponent = ({ gamesByPlatform }: { gamesByPlatform: GamesTyp
                 }
               }}
               name='por-tempo-de-jogo'
-              className={`border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 py-2 px-6  text-size5 font-semibold ${filters.screen === 'time-game' ? ' text-textHighlited border-textHighlited' : 'border-transparent'}`}>
+              className={`border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 py-2  w-[60px] flex items-center justify-center text-size5 font-semibold ${filters.screen === 'time-game' ? ' text-textHighlited border-textHighlited' : 'border-transparent'}`}>
+              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="23px" width="23px" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" /><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+            </ButtonWithSound>
 
-              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z" /><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" /><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+            <ButtonWithSound
+              onClick={() => setDevOptionsIsOppened(true)}
+              name='dev'
+              className="border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 py-2 w-[60px] flex items-center justify-center text-size5 font-semibold border-transparent">
+              <Icon.Config className='group-hover:stroke-textHighlited transition-all text-size5' />
             </ButtonWithSound>
           </div>
         </div>
 
-        <div className="mt-4" />
-        <div className='flex items-center justify-center mt-2 px-6 py-2 text-size4'>
-          Resultados {gamesFiltered.length}
+
+
+        {/* <div className="mt-4" /> */}
+        <div className='flex items-center justify-center px-6 py-2 text-size4 select-none'>
+          {filters.platform?.folder ? (
+            <div className='flex items-center justify-center'>
+              <div className='min-h-[38.5px]'>
+                {gamesFiltered.length} resultados nas pastas
+              </div>
+              <div className='pl-4 flex'>
+                {filters.platform?.folder?.map((folder) => <ButtonWithSound
+
+                  className='flex gap-2 px-2 py-1 items-center justify-center border-b-2 cursor-pointer hover:bg-backgroundButtonHover transition-all duration-75 text-size3 font-semibold border-transparent'
+                  onClick={() => window.electron.openFolder(`${PATH_CONTENT_GAMES_FOLDER}/${folder}`)} key={folder[0]}>
+                  <div>
+                    <Icon.Folder />
+                  </div>
+                  <div>
+                    {folder}
+                  </div>
+                </ButtonWithSound>)}
+              </div>
+            </div>
+          ) : <div className='px-2 py-1 min-h-[38.5px]'>Resultados {gamesFiltered.length}</div>}
         </div>
       </div>
     </div>

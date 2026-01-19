@@ -11,7 +11,7 @@ import {
 } from '@/config/index';
 import { getLocalRunNode } from '@/backend/utils';
 
-export function createConfigFolders(folder: string): { needCreate: boolean } {
+function createConfigFolders(folder: string): { needCreate: boolean } {
   const pathResolved = path.join(getLocalRunNode(), folder);
 
   console.log(pathResolved);

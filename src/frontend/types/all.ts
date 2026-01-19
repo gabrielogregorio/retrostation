@@ -4,6 +4,7 @@ export type DescriptionsType = {
   realName?: string;
   description?: string;
   descrição?: string;
+  // tags?: []; // future
 };
 
 type GameFileType =

@@ -14,7 +14,7 @@ import {
 } from '@/scrapper/utils';
 import { onlyLettersAndNumbers } from '@/scrapper/utilsv2';
 
-export const runScrapper = async () => {
+export const runScrapper = () => {
   const images = getAllImagesResolved();
 
   const descriptions = readDescriptionsData().map((item) => ({
@@ -45,7 +45,7 @@ export const runScrapper = async () => {
       const gameItem = gamesByName[gameName];
 
       const searchNameOptimized = onlyLettersAndNumbers(gameName);
-      const findDescriptions = descriptions.find((item) => item.search === searchNameOptimized); // mudar
+      const findDescriptions = descriptions.find((item) => item.search === searchNameOptimized);
 
       const findImageRealName = findDescriptions?.realName
         ? findImageFromGameByNameOptimized(

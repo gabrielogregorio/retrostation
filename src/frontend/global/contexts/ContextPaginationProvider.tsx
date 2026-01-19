@@ -55,7 +55,6 @@ export const ContextPaginationProvider = ({ children }: { children: ReactNode })
   }, [setPage])
 
   const updateGameFilteredLocal = useCallback((newGames: GamesType[]) => {
-    console.log("ap", newGames.length)
     setGameFilteredLocal(newGames);
   }, [setGameFilteredLocal])
 

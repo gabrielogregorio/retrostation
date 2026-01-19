@@ -39,7 +39,6 @@ export const SyncFiles = () => {
           inScrapping: false,
         }));
 
-        window.location.reload();
         return;
       }
 
@@ -49,7 +48,6 @@ export const SyncFiles = () => {
         inScrapping: false,
       }));
 
-      console.log(result);
     });
 
     return () => unsubscribe();
@@ -59,8 +57,9 @@ export const SyncFiles = () => {
 
     <ButtonWithSound
       type="button"
+      title='Atualizar biblioteca'
       onClick={() => handleRunScrapper()}
-      className="flex items-center justify-center group">
+      className="group  hover:bg-backgroundButtonHover py-2  w-[60px] flex items-center justify-center">
       <Icon.Refresh
         className={`group-hover:stroke-textHighlited transition-all text-size5 ${scrapperResult.inScrapping ? 'animate-spin' : ''}`}
       />

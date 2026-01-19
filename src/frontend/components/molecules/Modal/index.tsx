@@ -14,7 +14,7 @@ const Root = ({ children, isOpen, onClose, className = '' }: RootProps) => (
     open={isOpen}
     onClose={onClose}
     className={tailwindMerge(
-      'fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center bg-black/60 backdrop-blur-lg transition-all duration-75 animate-fadeIn',
+      'fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center bg-black/80 backdrop-blur-lg transition-all duration-75 animate-fadeIn',
       className,
     )}>
     {children}

@@ -24,7 +24,7 @@ export const Launcher = ({ isLoaded }: { isLoaded: () => void }) => {
       globalData.runnersByFolder.filter(
         (runnerFolder) => myPlatform && runnerFolder.runners.find((runner) => runner.platform === myPlatform.platform),
       ),
-    [myPlatform],
+    [myPlatform, globalData],
   );
 
   const gamesByPlatform = useMemo(() => {
@@ -39,6 +39,7 @@ export const Launcher = ({ isLoaded }: { isLoaded: () => void }) => {
     );
   }, [runnersByFolderAvailableInThisPlatform, myPlatform]);
 
+
   return (
     <div className="min-w-screen min-h-screen min-w-[100vw] max-w-[100vw] flex items-center flex-col justify-center scroll-smooth overflow-hidden">
 
@@ -46,7 +47,7 @@ export const Launcher = ({ isLoaded }: { isLoaded: () => void }) => {
 
       <div
         className="w-full flex-1 px-4 overflow-y-scroll scroll-smooth vertical-scrollbar"
-        style={{ maxHeight: size.height - 209 }}>
+        style={{ maxHeight: size.height - 196 }}>
         <Games
 
           runnersByFolderAvailableInThisPlatform={runnersByFolderAvailableInThisPlatform}
