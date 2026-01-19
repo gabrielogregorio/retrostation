@@ -42,7 +42,7 @@ export const getAllImagesResolved = (): {
       const urlRelative = urlRelativeRaw.replace(/\\/g, '/');
 
       const parts = urlRelative.split('/');
-      const search = `${onlyLettersAndNumbers(parts[parts.length - 2])}/${onlyLettersAndNumbers(parts[parts.length - 1].split('.')[0])}`;
+      const search = `${onlyLettersAndNumbers(parts[parts.length - 2])}/${onlyLettersAndNumbers(parts[parts.length - 1].replace(/\.([^.]*)$/, ''))}`;
 
       return {
         urlRelative,
@@ -72,7 +72,9 @@ export const loadAllGamesWithPathResolvedAndFolder = ({
     const { map } = runnerByFolder;
 
     if (map.mode === 'file') {
-      const allFiles = getAllFiles(folderResolved).filter((gameFileUrlRelative) => {
+      const allFilesRaw = getAllFiles(folderResolved);
+
+      const allFiles = allFilesRaw.filter((gameFileUrlRelative) => {
         const shouldBeIgnore = map.ignoreFiles?.length
           ? map.ignoreFiles.find((ignPattern) => gameFileUrlRelative.toLowerCase().includes(ignPattern))
           : false;
